@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Morse Terminal</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .box {
+            max-width: 700px;
+            margin: auto;
+            padding: 40px;
+            background: #1e1e1e;
+            border-radius: 15px;
+        }
+
+        .morse {
+            font-size: 28px;
+            margin: 30px;
+            color: #aaa;
+        }
+
+        .message {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 30px;
+            color: #4cff72;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+
+        <h1>⚡ Morse Terminal</h1>
+
+        <div class="morse" id="morse">
+            Waiting for Morse...
+        </div>
+
+        <div class="message" id="message">
+            ---
+        </div>
+
+        <div class="status">
+            🟢 Server Online
+        </div>
+        <button onclick="clearMessage()">CLEAR</button>
+
+    </div>
+
+    <script>
+
+        async function update() {
+
+            const response = await fetch("/data");
+            const data = await response.json();
+
+            document.getElementById("morse").textContent =
+                data.morse || "Waiting for Morse...";
+
+            document.getElementById("message").textContent =
+                data.message || "---";
+        }
+
+        async function clearMessage() {
+
+            await fetch("/clear", {
+                method: "POST"
+            });
+
+            update();
+        }
+
+        setInterval(update, 200);
+
+    </script>
+
+</body>
+
+</html>
